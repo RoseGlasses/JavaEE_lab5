@@ -82,7 +82,7 @@ public class OrdersService {
                 public void onException(Throwable throwable) {
                     //System.out.println(ordersRetVo+"creation failed!");
                 }
-            }, timeout * 1000);
+            });
             return true;
         }
         catch (Exception e){
