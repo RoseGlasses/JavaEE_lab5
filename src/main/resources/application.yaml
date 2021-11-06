@@ -1,0 +1,80 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+server:
+  port: 8085
+
+spring:
+  boot:
+    admin:
+      client:
+        url: http://localhost:8081
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://172.16.1.117:3306/oomall_demo?serverTimezone=GMT%2B8
+    username: demouser
+    password: 123456
+    type: com.alibaba.druid.pool.DruidDataSource
+    initialization-mode: always
+    schema: classpath:schema.sql
+    data: classpath:data.sql
+    druid:
+      #初始化时建立物理连接的个数
+      initial-size: 3
+      #最小连接池数量
+      min-idle: 3
+      #最大连接池数量
+      max-active: 500
+      #获取连接时最大等待时间
+      max-wait: 60000
+      #配置监控页面访问登录名及密码
+      stat-view-servlet:
+        login-username: admin
+        login-password: 123456
+        enabled: true
+        url-pattern: /druid/*
+
+      filter:
+        stat:
+          #是否开启慢sql查询监控
+          log-slow-sql: true
+          #慢SQL执行时间
+          slow-sql-millis: 100
+      validation-query: select 1
+    sql-script-encoding: UTF-8
+
+
+mybatis:
+  #domain对象的包
+  type-aliases-package: cn.edu.xmu.lab5.model
+  #mapper.xml所在的位置
+  mapper-locations: classpath:cn.edu.xmu.lab5.mapper/*.xml
+  #自动将SQL中查出来的带下划线的字段，转换为驼峰标志，再去匹配类中的属性
+  configuration:
+    #输出产生的SQL
+    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+
+# 配置rocketmq
+rocketmq:
+  # 指定namesrv地址
+  name-server: 172.16.0.115:9876
+  producer:
+    #生产者group名称
+    group: producer_group
+    #一次发送多少数量消息
+    max-message-size: 4096
+    #发送消息超时时间,默认3000
+    send-message-timeout: 3000
+    #发送消息失败重试次数，默认2
+    retry-times-when-send-async-failed: 2
+
+lab5:
+  order-create-topic:
+    # 固定的延时等级 "1s 5s 10s 30s 1m 2m 3m 4m 5m 6m 7m 8m 9m 10m 20m 30m 1h 2h"
+    delay-level: 3
+    #超时时间（秒）
+    timeout: 10
